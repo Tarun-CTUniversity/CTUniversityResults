@@ -2,36 +2,10 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Certificate from './Certificate';
 
-export default function ResultPage({ roll, setFrontPage, setRoll }) {
-  const [certificateData, setCertificateData] = useState(null);
-
-  const fetchCertificateData = async (regNo) => {
-    try {
-      const response = await axios.get(`http://192.168.124.197:4000/getData/${regNo}`);
-      if (response.status === 200) {
-        setCertificateData(response.data);
-      } else if (response.status === 404) {
-        alert('Result Not Found');
-        handleBack();
-      } else {
-        alert('Result Not Found');
-        handleBack();
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      handleBack();
-    }
-  };
-
-  useEffect(() => {
-    if (roll) {
-      fetchCertificateData(roll);
-    }
-  }, [roll]);
+export default function ResultPage({ certificateData, setFrontPage }) {
 
   const handleBack = () => {
     setFrontPage(true);
-    setRoll('');
   };
 
   const handlePrint = () => {

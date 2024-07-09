@@ -2,56 +2,15 @@ const mysql = require('mysql2/promise'); // Ensure you have installed mysql2
 
 async function insertResults(results) {
     const pool = connectDatabase(); // Get MySQL connection pool
+
     const connection = await pool.getConnection();
-
-    // Function to validate a single result object
-    function validateResult(result) {
-        let nanCount = 0;
-        let validationErrors = [];
-
-        for (const key in result) {
-            if (typeof result[key] === 'number' && isNaN(result[key])) {
-                nanCount++;
-                validationErrors.push(`${key} is NaN`);
-            } else if (typeof result[key] === 'object') {
-                if (Array.isArray(result[key])) {
-                    result[key].forEach((value, index) => {
-                        if (typeof value === 'number' && isNaN(value)) {
-                            nanCount++;
-                            validationErrors.push(`${key}[${index}] is NaN`);
-                        }
-                    });
-                } else {
-                    for (const subKey in result[key]) {
-                        if (typeof result[key][subKey] === 'number' && isNaN(result[key][subKey])) {
-                            nanCount++;
-                            validationErrors.push(`${key}.${subKey} is NaN`);
-                        }
-                    }
-                }
-            }
-        }
-
-        return { nanCount, validationErrors };
-    }
 
     try {
         // Start transaction
         await connection.beginTransaction();
 
-        let totalNanCount = 0;
-        let validationResults = [];
-
-        // Iterate through each result and validate then insert into 'result' table
+        // Iterate through each result and insert into 'result' table
         for (let item of results) {
-            // Validate the item
-            const validationResult = validateResult(item);
-            totalNanCount += validationResult.nanCount;
-            if (validationResult.validationErrors.length > 0) {
-                validationResults.push({ item, errors: validationResult.validationErrors });
-                continue; // Skip insertion if validation fails
-            }
-
             // Convert arrays to JSON strings
             const resultData = {
                 enrollment_no: item['ENROLEMENT NO'],
@@ -62,8 +21,8 @@ async function insertResults(results) {
                 subject_codes: JSON.stringify(item.subjectCodes),
                 subjects: JSON.stringify(item.subjects),
                 gps: JSON.stringify(item.gps),
-                grades: JSON.stringify(item.grades),
-                credits: JSON.stringify(item.credits),
+                grades:JSON.stringify(item.grades),
+                credits:JSON.stringify(item.credits),
                 status: item.status,
                 percentage: item.percentage,
                 sgpa: item.sgpa,
@@ -96,7 +55,7 @@ async function insertResults(results) {
         await connection.commit();
         console.log('All results inserted successfully');
 
-        return { success: true, totalNanCount, validationResults };
+        return { success: true };
     } catch (error) {
         await connection.rollback();
         console.error('Error inserting results:', error);

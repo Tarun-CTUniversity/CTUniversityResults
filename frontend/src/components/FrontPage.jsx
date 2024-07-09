@@ -1,12 +1,40 @@
-import  {  useState } from 'react';
+import  {  useEffect, useState } from 'react';
 import logo from '../assets/images/Ct_logo.png';
-
-const FrontPage = ({setFrontPage , setRoll}) => {
+import axios from 'axios';
+const FrontPage = ({setFrontPage , setCertificateData}) => {
     const [rollNo , setRollNo] = useState('');
-    const handleSearch = () =>{
+    const [trigger , setTrigger] = useState(false);
+    const fetchCertificateData = async (regNo) => {
+      try {
+        const response = await axios.get(`http://192.168.124.197:4000/getData/${regNo}`);
+        if (response.status === 200) {
+          setCertificateData(response.data);
+          return false;
+        } else if (response.status === 404) {
+          alert('Result Not Found');
+        } else {
+          alert('Result Not Found');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+      setTrigger(true);
+      return true;
+    };
+    useEffect(() => {
+      if (trigger) {
+          const timer = setTimeout(() => {
+              setTrigger(false);
+          }, 2000); // Change 3000 to the number of milliseconds you want the notification to be visible
+
+          return () => clearTimeout(timer);
+      }
+  }, [trigger, setTrigger]);
+
+    const handleSearch = async () =>{
         if(rollNo.length === 8){
-            setRoll(rollNo); 
-            setFrontPage(false);
+            const frontPage = await fetchCertificateData(rollNo);
+            setFrontPage(frontPage);
         }
         else{
           alert("Give proper Registration Number");
@@ -14,6 +42,9 @@ const FrontPage = ({setFrontPage , setRoll}) => {
     }
   return (
     <div className="min-h-screen bg-gray-100">
+      {trigger && <div className='absolute top-[100px] right-[10px] p-4 bg-yellow-300 rounded-2xl font-semibold' >
+           Result not Found Please contect Controller of Examination
+      </div>}
       {/* Top bar with university name and logo */}
       <div className="p-4 flex items-center justify-between bg-blue-600">
         <div className="flex items-center w-full">

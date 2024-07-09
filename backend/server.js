@@ -13,9 +13,11 @@ app.use(bodyParser.json());
 const db = connectDatabase ();
 createTable(db);
 
-
+// Students Frontend
 app.get('/getData/:regNo', getDataMiddleware);
 
+
+// Examination Front End
 app.post('/addFile', async (req, res, next) => {
     try {
         const csvData = req.body.csvData || req.body.data; // Handle both possible request body keys
@@ -59,3 +61,7 @@ app.get('/:pass',async (req,res,next) =>{
 app.listen(process.env.PORT, '192.168.124.197', () => {
     console.log(`Server is running on http://192.168.124.197:${process.env.PORT}`);
 });
+
+// app.listen(process.env.PORT, () => {
+//     console.log(`Server is running on http://localhost:${process.env.PORT}`);
+// });

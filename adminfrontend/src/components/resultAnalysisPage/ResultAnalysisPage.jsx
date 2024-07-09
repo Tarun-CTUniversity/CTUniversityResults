@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './ResultAnalysisPage.css';
 import { HOST } from '../constants';
-const ResultAnalysisPage = ({ setData, data, setFrontPage }) => {
+const ResultAnalysisPage = ({ setData, data , error, setFrontPage }) => {
   const [schoolName, setSchoolName] = useState(data[0].COLLEGE);
   const [course, setCourse] = useState(data[0].COURSE);
   const [totalSubjects, setTotalSubjects] = useState(data[0].subjectCodes.length);
@@ -81,6 +81,8 @@ const ResultAnalysisPage = ({ setData, data, setFrontPage }) => {
         </div>
       </div>
 
+      <label style={{font:'20px' , fontWeight:'bold' , color : 'red', margin:'10px'}}>Total Error : {error.total}</label>
+
       {/* Data table section */}
       <div className="table-section">
         <table>
@@ -137,7 +139,7 @@ const ResultAnalysisPage = ({ setData, data, setFrontPage }) => {
       {/* Buttons section */}
       <div className="button-section">
         <button onClick={() => { setFrontPage(true); setData([]); }}>Back</button>
-        <button onClick={sendData}>Create</button>
+        {error.total == 0 && <button onClick={sendData}>Create</button>}
       </div>
     </div>
   );

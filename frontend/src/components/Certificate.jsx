@@ -66,6 +66,9 @@ export default function Certificate({ certificateData }) {
       <p className={`font-bold ${certificateData.STATUS === 'PASS' ? 'text-green-500' : 'text-red-600'}`}>
         <span className="font-semibold text-black">Status:</span> {certificateData.STATUS}
       </p>
+      <p className=' text-[12px] mt-4'>
+        *This is computer genrated result. For other purposes kindly get approvel from COE office
+      </p>
       
     </div>
   );

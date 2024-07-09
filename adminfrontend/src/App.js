@@ -21,7 +21,7 @@ function App() {
         <div>
           {/* <FetchDataButton /> */}
           {frontPage && <AdminFrontPage setData = {setData} setFrontPage={setFrontPage}/> }
-          {!frontPage && <ResultAnalysisPage setData = {setData}  data= {data} setFrontPage={setFrontPage}/>}
+          {!frontPage && <ResultAnalysisPage setData = {setData}  data= {data.data} error={data.error} setFrontPage={setFrontPage}/>}
         </div>
       }
     </div>

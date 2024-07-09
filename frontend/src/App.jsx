@@ -6,11 +6,11 @@ import ResultPage from './components/ResultPage';
 
 function App() {
   const [frontPage,setFrontPage] = useState(true);
-  const [roll , setRoll] = useState('');
+  const [certificateData, setCertificateData] = useState(null);
   return (
     <div>
-      {frontPage && <FrontPage setFrontPage={setFrontPage} setRoll={setRoll}/>}
-      {!frontPage && <ResultPage setFrontPage = {setFrontPage} setRoll={setRoll} roll = {roll}/>}
+      {frontPage && <FrontPage setFrontPage={setFrontPage} setCertificateData={setCertificateData}/>}
+      {!frontPage && <ResultPage setFrontPage = {setFrontPage} certificateData= {certificateData}/>}
     </div>
   );
 }

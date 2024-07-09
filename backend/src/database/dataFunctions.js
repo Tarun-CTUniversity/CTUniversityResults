@@ -22,7 +22,34 @@ exports.readCSV = (csvData) => {
 };
 
 exports.transformData = async (data) => {
-    return data.map(item => {
+   const ErrorReg = [];
+   let TotalError = 0;
+
+   const checkError = (item , data , number , reg ) =>{
+          if(typeof item[data] === 'undefined' || item[data] == "#REF!"){
+            item[data] = "Error";
+            TotalError++;
+            ErrorReg.push(reg);
+            return;
+          }
+          if(number && Number.isNaN(parseFloat(item[data]))){
+            item[data] = "Error";
+            TotalError++;
+            ErrorReg.push(reg);
+            return;
+          }
+   }
+
+   const twoDigit = (num , dig) =>{
+     if(isNaN(num.toFixed(dig))){
+       return "Error";
+     }
+     
+      return num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+     
+   }
+
+    const transformedData = data.map(item => {
         const subjects = [];
         const subjectCodes = [];
         const subjectGPS = [];
@@ -31,27 +58,37 @@ exports.transformData = async (data) => {
         let i = 1;
         while (item[`Sub Code${i}`] || item[`Sub Name${i}`]) {
             if (item[`Sub Code${i}`]) {
+                checkError(item ,`Sub Code${i}` , false,item['ENROLEMENT NO']);
                 subjectCodes.push(item[`Sub Code${i}`]);
             }
             if (item[`Sub Name${i}`]) {
-                subjects.push(item[`Sub Name${i}`]);
+              checkError(item ,`Sub Name${i}` , false,item['ENROLEMENT NO']);                
+              subjects.push(item[`Sub Name${i}`]);
             }
             if (item[`GP${i}`]) {
-                subjectGPS.push(item[`GP${i}`]);
+              checkError(item ,`GP${i}`, true,item['ENROLEMENT NO']);
+              subjectGPS.push(item[`GP${i}`]);
             }
-            if (item[`TCr ${i}`]) {
-              subCredits.push(item[`TCr ${i}`]);
-            } else if (item[`TCr${i}`]) {
+
+            if(item[`TCr${i}`]) {
+              checkError(item,`TCr${i}`, true,item['ENROLEMENT NO']);
               subCredits.push(item[`TCr${i}`]);
             }
 
             if (item[`LG${i}`]) {
+              checkError(item,`LG${i}`, false,item['ENROLEMENT NO']);
               subGrades.push(item[`LG${i}`]);
             }
 
 
             i++;
         }
+
+        checkError(item,'ENROLEMENT NO', true,item['ENROLEMENT NO']);
+        checkError(item,'STUDENT NAME', false,item['ENROLEMENT NO']);
+        checkError(item,'STATUS', false,item['ENROLEMENT NO']);
+        checkError(item,'% BASED ON SGPA', true,item['ENROLEMENT NO']);
+
 
         return {
             'ENROLEMENT NO': item['ENROLEMENT NO'],
@@ -65,11 +102,13 @@ exports.transformData = async (data) => {
             grades:subGrades,
             credits:subCredits,
             status: item.STATUS,
-            percentage: item['% BASED ON SGPA'], // Show '% BASED ON SGPA' instead of SGPA
-            sgpa:item['% BASED ON SGPA']/10,
+            percentage: twoDigit(parseFloat(item['% BASED ON SGPA'],2)), // Show '% BASED ON SGPA' instead of SGPA
+            sgpa:twoDigit(parseFloat(item['% BASED ON SGPA']/10),2),
             'EXAMINATION M/YR':item['EXAMINATION M/YR']
         };
     });
+
+    return {'data':transformedData , 'error':{'err':ErrorReg , 'total' : TotalError}};
 };
 
 // Function to establish and return a MySQL connection pool
