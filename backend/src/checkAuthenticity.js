@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 
 
 exports.checkAuthenticity= async(body , connection)=>{
-    const {s_REG , s_DOB} = body; // Assuming regNo is passed as a route parameter
+    const [s_REG , s_DOB] = body; // Assuming regNo is passed as a route parameter
     try {
         // Query to fetch data based on enrollment number
         const query = 'SELECT * FROM dobdata WHERE REG = ? AND DOB = ?';

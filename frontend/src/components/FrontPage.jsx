@@ -4,21 +4,29 @@ import axios from 'axios'
 
 const FrontPage = ({setFrontPage , setCertificateData}) => {
     const [rollNo , setRollNo] = useState('');
+    const [dob , setDOB] = useState('');
+    const [msg , setMessage] = useState('Fill the Data Properly')
     const [trigger , setTrigger] = useState(false);
 
-    const fetchCertificateData = async (regNo) => {
+    const handleDate = (date) =>{
+      const [y , m ,d] = date.split(/[\/.-]/);
+      setDOB(`${d}-${m}-${y}`);
+    }
+
+    const fetchCertificateData = async (regNo,DOB) => {
       try {
-        const response = await axios.get(`/api/getData/${regNo}`)
-        if (response.status === 200) {
-          setCertificateData(response.data);
+        const REG_DOB = regNo + ',' + DOB;
+        const response = await axios.get(`/api/getData/${REG_DOB}`)
+        if (response.data.success) {
+          setCertificateData(response.data.data);
           return false;
-        } else if (response.status === 404) {
-          alert('Result Not Found');
-        } else {
-          alert('Result Not Found');
+        } else{
+          
+           setMessage(response.data.error)
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+        setMessage(response.data.error)
       }
       setTrigger(true);
       return true;
@@ -37,7 +45,7 @@ const FrontPage = ({setFrontPage , setCertificateData}) => {
 
     const handleSearch = async () =>{
         if(rollNo.length === 8){
-            const frontPage = await fetchCertificateData(rollNo);
+            const frontPage = await fetchCertificateData(rollNo,dob);
             setFrontPage(frontPage);
         }
         else{
@@ -47,7 +55,7 @@ const FrontPage = ({setFrontPage , setCertificateData}) => {
   return (
     <div className="min-h-screen bg-gray-100">
       {trigger && <div className='absolute top-[100px] right-[10px] p-4 bg-yellow-300 rounded-2xl font-semibold' >
-           Result not Found Please contect Controller of Examination
+           {msg}
       </div>}
       {/* Top bar with university name and logo */}
       <div className="p-4 flex items-center justify-between bg-blue-600">
@@ -61,10 +69,10 @@ const FrontPage = ({setFrontPage , setCertificateData}) => {
         
         <div className="bg-white p-8 rounded shadow-md w-full max-w-sm">
             
-          <div className="mb-4">
+          <div className="mb-4 p-2">
             
-            <label htmlFor="enrollment-number" className="block text-gray-700 font-semibold mb-2">
-              Enrollment Number
+            <label className="block text-gray-700 font-semibold mb-1">
+              Registration Number
             </label>
             <input
               type="number"
@@ -73,7 +81,21 @@ const FrontPage = ({setFrontPage , setCertificateData}) => {
               placeholder="Enter your Registration number"
               onChange={(e)=>{setRollNo(e.target.value)}}
             />
+
+            <label className="block mt-2 text-gray-700 font-semibold mb-1">
+              Date of Birth
+            </label>
+
+            <input
+              type='date'
+              id="dateOfBirth"
+              className="w-full px-3  py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your Date of Birth"
+              onChange={(e)=>{handleDate(e.target.value)}}
+            />
+
           </div>
+
           <button className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           onClick={handleSearch}>
             Search

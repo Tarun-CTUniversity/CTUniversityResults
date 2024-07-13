@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 const { checkAuthenticity } = require('../checkAuthenticity');
 
 exports.getDataMiddleware = async (req, res, next) => {
-    const body = req.body; // Assuming regNo is passed as a route parameter
+    const body = req.params.REG_DOB.split(',');
     
     const pool = mysql.createPool({
         host: process.env.HOST,
@@ -18,18 +18,18 @@ exports.getDataMiddleware = async (req, res, next) => {
 
     const resp = await checkAuthenticity(body , connection);
     if(!resp.login){
-      return res.status(404).json({ error: resp.error});
+      return res.json({success:false ,  error: ' Your Registration Number or Date Of Birth is wrong'});
     }
-    const regNo = body.REG;
+    const regNo = body[0];
   
     try {
       // Query to fetch data based on enrollment number
       const query = 'SELECT * FROM result WHERE enrollment_no = ?';
       const [rows] = await connection.query(query, [regNo]);
-        
+      
       // Check if data exists for the given enrollment number
       if (rows.length === 0) {
-        return res.status(404).json({ error: 'Your result is still not declared. Kindly check after some days for further updates.' });
+        return res.json({success:false , error: 'Your result is still not declared. Kindly check after some days for further updates.' });
       }
   
       // Assuming there's only one result since enrollment number is unique
@@ -55,10 +55,10 @@ exports.getDataMiddleware = async (req, res, next) => {
 
       // console.log(responseData)
   
-      res.status(200).json(responseData);
+      res.json({success:true ,data:responseData});
     } catch (error) {
       console.error('Error fetching data:', error);
-      res.status(500).json({ error: 'Your result is still not declared. Kindly check after some days for further updates.' });
+      res.json({success:false , error: 'Your result is still not declared. Kindly check after some days for further updates.' });
     } finally {
       if (connection) connection.release();
     }

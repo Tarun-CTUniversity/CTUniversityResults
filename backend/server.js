@@ -16,12 +16,12 @@ createTable(db);
 
 
 // Students Frontend
-app.get('/getData/:regNo', getDataMiddleware);
+app.get('/getData/:REG_DOB', getDataMiddleware);
 
-app.get('/getData', async (req,res,next)=>{
-    console.log("trigger");
-    res.json({data:'Data'});
-});
+// app.get('/getData', async (req,res,next)=>{
+//     console.log("trigger");
+//     res.json({data:'Data'});
+// });
 
 
 // Examination Front End

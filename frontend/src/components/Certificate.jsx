@@ -3,8 +3,8 @@ import logo from '../assets/images/Ct_logo.png';
 import image from '../assets/images/CT_University_logo.png';
 
 export default function Certificate({ certificateData }) {
-  const textStyle = "text-[13px] font-semibold";
-  const resStyle = "text-[13px] font-bold";
+  const textStyle = "text-[13px] font-semibold mr-1";
+  const resStyle = "text-[13px] font-bold mt-1 ml-[20%]";
 
   const renderSubjectsTable = () => (
     <table className="w-full border-collapse border border-gray-300 mb-4 text-[13px]">
@@ -61,7 +61,7 @@ export default function Certificate({ certificateData }) {
           <p className={`${resStyle} text-left`}><span className={textStyle}>Semester:</span> {certificateData.SEMESTER}</p>
         </div>
       </div>
-      <p className={`${resStyle} -mt-4 mb-4`}><span className={textStyle}>Exam Year:</span> {certificateData.EXAM_MONTH_YEAR}</p>
+      <p className="mb-2 text-center"><span className={textStyle}>Exam Year:</span> {certificateData.EXAM_MONTH_YEAR}</p>
       {renderSubjectsTable()}
       <p className={`font-bold ${certificateData.STATUS === 'PASS' ? 'text-green-500' : 'text-red-600'}`}>
         <span className="font-semibold text-black">Status:</span> {certificateData.STATUS}
