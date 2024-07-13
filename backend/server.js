@@ -3,18 +3,25 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const {readCSV , transformData , createTable , connectDatabase } = require('./src/database/dataFunctions')
 const {insertResults} = require('./src/database/insertResults')
-const {getDataMiddleware} = require('./src/database/getData')
+const {getDataMiddleware} = require('./src/database/getData');
 
 
 app.use(cors());
+
 app.use(bodyParser.json());
 
 
 const db = connectDatabase ();
 createTable(db);
 
+
 // Students Frontend
 app.get('/getData/:regNo', getDataMiddleware);
+
+app.get('/getData', async (req,res,next)=>{
+    console.log("trigger");
+    res.json({data:'Data'});
+});
 
 
 // Examination Front End

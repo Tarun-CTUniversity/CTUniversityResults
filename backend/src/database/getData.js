@@ -1,7 +1,8 @@
 const mysql = require('mysql2/promise');
+const { checkAuthenticity } = require('../checkAuthenticity');
 
 exports.getDataMiddleware = async (req, res, next) => {
-    const regNo = req.params.regNo; // Assuming regNo is passed as a route parameter
+    const body = req.body; // Assuming regNo is passed as a route parameter
     
     const pool = mysql.createPool({
         host: process.env.HOST,
@@ -10,10 +11,16 @@ exports.getDataMiddleware = async (req, res, next) => {
         password: process.env.PASS,
         database: process.env.DATABASE,
         waitForConnections: true,
-        connectionLimit: 10,
+        connectionLimit: 500,
         queueLimit: 0
       });
     const connection = await pool.getConnection();
+
+    const resp = await checkAuthenticity(body , connection);
+    if(!resp.login){
+      return res.status(404).json({ error: resp.error});
+    }
+    const regNo = body.REG;
   
     try {
       // Query to fetch data based on enrollment number
@@ -22,7 +29,7 @@ exports.getDataMiddleware = async (req, res, next) => {
         
       // Check if data exists for the given enrollment number
       if (rows.length === 0) {
-        return res.status(404).json({ error: 'Data not found' });
+        return res.status(404).json({ error: 'Your result is still not declared. Kindly check after some days for further updates.' });
       }
   
       // Assuming there's only one result since enrollment number is unique
@@ -51,8 +58,8 @@ exports.getDataMiddleware = async (req, res, next) => {
       res.status(200).json(responseData);
     } catch (error) {
       console.error('Error fetching data:', error);
-      res.status(500).json({ error: 'Failed to fetch data' });
+      res.status(500).json({ error: 'Your result is still not declared. Kindly check after some days for further updates.' });
     } finally {
-      connection.release(); // Release the connection back to the pool
+      if (connection) connection.release();
     }
   };

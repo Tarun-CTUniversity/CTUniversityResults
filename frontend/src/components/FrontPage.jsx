@@ -1,12 +1,14 @@
 import  {  useEffect, useState } from 'react';
 import logo from '../assets/images/Ct_logo.png';
-import axios from 'axios';
+import axios from 'axios'
+
 const FrontPage = ({setFrontPage , setCertificateData}) => {
     const [rollNo , setRollNo] = useState('');
     const [trigger , setTrigger] = useState(false);
+
     const fetchCertificateData = async (regNo) => {
       try {
-        const response = await axios.get(`http://192.168.124.197:4000/getData/${regNo}`);
+        const response = await axios.get(`/api/getData/${regNo}`)
         if (response.status === 200) {
           setCertificateData(response.data);
           return false;
@@ -21,6 +23,8 @@ const FrontPage = ({setFrontPage , setCertificateData}) => {
       setTrigger(true);
       return true;
     };
+
+
     useEffect(() => {
       if (trigger) {
           const timer = setTimeout(() => {

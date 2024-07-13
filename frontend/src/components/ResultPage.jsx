@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+
 import Certificate from './Certificate';
 
 export default function ResultPage({ certificateData, setFrontPage }) {

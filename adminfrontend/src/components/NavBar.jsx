@@ -1,6 +1,7 @@
 import React from 'react'
 import logo from '../Assets/images/Ct_logo.png';
 import GenerateExcelButton from './GenerateExcelButton';
+import GenerateJsonFiles from './GenrateJsonFiles'
 
 export default function NavBar() {
   return (
@@ -23,6 +24,7 @@ export default function NavBar() {
       }/>
 
       <GenerateExcelButton />
+      <GenerateJsonFiles />
 
     </div>
   )
