@@ -60,12 +60,12 @@ const FrontPage = ({setFrontPage , setCertificateData}) => {
       {/* Top bar with university name and logo */}
       <div className="p-4 flex items-center justify-between bg-blue-600">
         <div className="flex items-center w-full">
-          <img src={logo} alt="CT University Logo" className="w-15 h-12 ml-5" />
-          <h1 className="text-xl font-bold text-white text-center flex-grow">CT University Results : ETE June 2024</h1>
+          <img src={logo} alt="CT University Logo" className="w-10 sm:w-[65px] sm:ml-5" />
+          <h1 className="text-xl font-bold text-white text-center flex-grow text-[10px] sm:text-[20px]">CT University Results : ETE June 2024</h1>
         </div>
       </div>
       {/* Main content section */}
-      <div className="flex items-center justify-center top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 absolute ">
+      <div className="flex items-center w-[70%] md:w-[30%] justify-center top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 absolute ">
         
         <div className="bg-white p-8 rounded shadow-md w-full max-w-sm">
             
