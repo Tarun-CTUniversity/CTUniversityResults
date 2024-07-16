@@ -1,9 +1,9 @@
 import React from 'react'
 import logo from '../Assets/images/Ct_logo.png';
 import GenerateExcelButton from './GenerateExcelButton';
-import GenerateJsonFiles from './GenrateJsonFiles'
 
-export default function NavBar() {
+
+export default function NavBar({setUploadFilePage , uploadFilePage}) {
   return (
     <div className='navbar' style={
       {
@@ -23,8 +23,16 @@ export default function NavBar() {
         }
       }/>
 
+      <div style={
+        {
+          color:'white',
+          marginLeft:'12%',
+          marginTop:'25px',
+          cursor:'pointer'
+        }
+      } onClick={() => setUploadFilePage(!uploadFilePage)}>{uploadFilePage ? 'Check Result' : 'Upload File'}</div>
       <GenerateExcelButton />
-      <GenerateJsonFiles />
+      
 
     </div>
   )

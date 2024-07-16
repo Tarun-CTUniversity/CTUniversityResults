@@ -1,7 +1,6 @@
-const fs = require('fs');
+
 const csv = require('csv-parser');
-const path = require('path');
-const mysql = require('mysql2');
+
 
 // Updated readCSV function to handle CSV data from the request body
 exports.readCSV = (csvData) => {
@@ -111,58 +110,3 @@ exports.transformData = async (data) => {
     return {'data':transformedData , 'error':{'err':ErrorReg , 'total' : TotalError}};
 };
 
-// Function to establish and return a MySQL connection pool
-exports.connectDatabase = () => {
-    const pool = mysql.createPool({
-      host: process.env.HOST,
-      port: process.env.SQL_PORT,
-      user: process.env.USER,
-      password: process.env.PASS,
-      database: process.env.DATABASE,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    });
-  
-    // Test the database connection
-    pool.getConnection((err, connection) => {
-      if (err) {
-        console.error('Error connecting to MySQL database:', err);
-        throw err; // Throw error to terminate application or handle appropriately
-      }
-      console.log('Connected to MySQL database');
-      connection.release(); // Release the connection back to the pool
-    });
-  
-    return pool;
-}
-
-
-
-exports.createTable = (db) =>{
-  // Create 'result' table if it doesn't exist
-const createTableQuery = `CREATE TABLE IF NOT EXISTS result(
-    enrollment_no VARCHAR(255) NOT NULL PRIMARY KEY,
-    student_name VARCHAR(255) NOT NULL,
-    college VARCHAR(255) NOT NULL,
-    course VARCHAR(255) NOT NULL,
-    semester VARCHAR(255) NOT NULL,
-    subject_codes JSON,
-    subjects JSON,
-    gps JSON,
-    grades JSON,
-    credits JSON,
-    status VARCHAR(50) NOT NULL,
-    percentage DECIMAL(5, 2) NOT NULL,
-    sgpa DECIMAL(5, 2) NOT NULL,
-    exam_month_year VARCHAR(50) NOT NULL
-  )`;
-
-  db.query(createTableQuery, (err, result) => {
-    if (err) {
-      console.error('Error creating table:', err);
-    } else {
-      console.log('Table "result" created or already exists');
-    }
-  });
-}

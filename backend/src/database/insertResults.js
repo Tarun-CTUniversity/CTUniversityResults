@@ -74,11 +74,11 @@ function connectDatabase() {
         password: process.env.PASS,
         database: process.env.DATABASE,
         waitForConnections: true,
-        connectionLimit: 10,
+        connectionLimit: process.env.CONNECTION_LIMIT,
         queueLimit: 0
     });
 
     return pool;
 }
 
-module.exports = { insertResults, connectDatabase };
+module.exports = { insertResults };

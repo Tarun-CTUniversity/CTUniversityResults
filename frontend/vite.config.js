@@ -1,11 +1,18 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 80, // Set the port to 80
+    // https: {
+    //   key: fs.readFileSync(path.resolve(__dirname, './certs/server.key')),
+    //   cert: fs.readFileSync(path.resolve(__dirname, './certs/STAR_ctuniversity_in.crt')),
+    //   ca: fs.readFileSync(path.resolve(__dirname, './certs/My_CA_Bundle.ca-bundle')),
+    // },
+    port: 80, // Set the port to 80 for http 443 for https
     host: '0.0.0.0', // Allow connections from any IP address
     proxy: {
       '/api': {

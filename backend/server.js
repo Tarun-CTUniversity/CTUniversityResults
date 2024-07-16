@@ -3,16 +3,21 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const {readCSV , transformData , createTable , connectDatabase } = require('./src/database/dataFunctions')
 const {insertResults} = require('./src/database/insertResults')
-const {getDataMiddleware} = require('./src/database/getData');
-
+const {getDataMiddleware, getDataExamination, updateDateOfBirth} = require('./src/database/getData');
+const { checkConnection } = require('./src/database/dataBaseConnection');
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
 
 app.use(cors());
 
 app.use(bodyParser.json());
 
 
-const db = connectDatabase ();
-createTable(db);
+// Test the database connection and create table if not exists
+(async () => {
+    await checkConnection();
+})();
 
 
 // Students Frontend
@@ -62,6 +67,9 @@ app.get('/:pass',async (req,res,next) =>{
         next(err)
     }
 })
+
+app.get('/examination/:RegNo' , getDataExamination);
+app.post('/examination/updateDateOfBirth' , updateDateOfBirth);
 
 // Create server
 
