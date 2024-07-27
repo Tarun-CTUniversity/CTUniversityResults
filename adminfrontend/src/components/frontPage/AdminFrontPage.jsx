@@ -22,6 +22,7 @@ const AdminFrontPage = ({setData , setFrontPage}) => {
         .then(response => {
           console.log('Data taken from CSV File :', response.data);
           setData(response.data);
+          // console.log(response.data);
           setFrontPage(false);
           // Handle success response if needed
         })

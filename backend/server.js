@@ -9,9 +9,10 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
+
 app.use(cors());
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 
 // Test the database connection and create table if not exists
@@ -68,8 +69,14 @@ app.get('/:pass',async (req,res,next) =>{
     }
 })
 
+
 app.get('/examination/:RegNo' , getDataExamination);
 app.post('/examination/updateDateOfBirth' , updateDateOfBirth);
+
+// Catch-all route
+app.get('*', (req, res) => {
+    res.status(404).send({ message: 'Route not found' });
+});
 
 // Create server
 

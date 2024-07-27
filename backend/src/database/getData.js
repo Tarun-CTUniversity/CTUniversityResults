@@ -126,24 +126,30 @@ exports.getDataExamination = async(req,res,next)=>{
 
 exports.updateDateOfBirth = async (req, res, next) => {
     const { REG, DOB } = req.body;
-  
+
     let connection;
     try {
-      // Get a connection from the pool
-      connection = await getConnection();
-  
-      
-      // If data exists, update the existing record
-      const updateQuery = 'UPDATE dobdata SET DOB = ? WHERE REG = ?';
-      await connection.query(updateQuery, [DOB, REG]);
-      
-  
-      res.send('Date of Birth updated successfully.');
+        // Get a connection from the pool
+        connection = await getConnection();
+
+        // Check if the record exists
+        const [rows] = await connection.query('SELECT * FROM dobdata WHERE REG = ?', [REG]);
+
+        if (rows.length > 0) {
+            // If the record exists, update the existing record
+            const updateQuery = 'UPDATE dobdata SET DOB = ? WHERE REG = ?';
+            await connection.query(updateQuery, [DOB, REG]);
+            res.send('Date of Birth updated successfully.');
+        } else {
+            // If the record does not exist, insert a new record
+            const insertQuery = 'INSERT INTO dobdata (REG, DOB) VALUES (?, ?)';
+            await connection.query(insertQuery, [REG, DOB]);
+            res.send('Date of Birth added successfully.');
+        }
     } catch (error) {
-      console.error('Error updating Date of Birth:', error);
-      res.send("Problem while Updating")
+        console.error('Error updating/adding Date of Birth:', error);
+        res.send("Problem while Updating/Adding");
     } finally {
-      if (connection) connection.release(); // Release the connection back to the pool
+        if (connection) connection.release(); // Release the connection back to the pool
     }
-  };
-  
+};

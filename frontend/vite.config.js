@@ -5,7 +5,21 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(),
+    {
+      name: 'middleware-debug',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          try {
+            // console.log('Request URL:', decodeURI(req.url));
+          } catch (e) {
+            console.error('Malformed URI:', req.url);
+          }
+          next();
+        });
+      }
+    }
+  ],
   server: {
     // https: {
     //   key: fs.readFileSync(path.resolve(__dirname, './certs/server.key')),

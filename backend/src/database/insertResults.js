@@ -26,7 +26,7 @@ async function insertResults(results) {
                 status: item.status,
                 percentage: item.percentage,
                 sgpa: item.sgpa,
-                exam_month_year: item['EXAMINATION M/YR']
+                exam_month_year: "JUNE,2024"    //item['EXAMINATION M/YR'] || 
             };
 
             // Insert the result record with ON DUPLICATE KEY UPDATE
@@ -54,6 +54,7 @@ async function insertResults(results) {
         // Commit transaction
         await connection.commit();
         console.log('All results inserted successfully');
+        backupFunction();
 
         return { success: true };
     } catch (error) {
